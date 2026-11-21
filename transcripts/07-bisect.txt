@@ -6,7 +6,7 @@ aa826cf docs: hướng dẫn chạy test
 fcf6b9c chore(deps): bump lodash
 859ffc2 docs: thêm README
 4e6baca feat(cart): tính tổng tiền có VAT
-$ node test.mjs || true
+$ node test.mjs
 FAIL: got 385.00000000000006
 
 # Bisect between HEAD (bad) and 4e6baca (good), and let the test decide
