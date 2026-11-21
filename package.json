@@ -1,0 +1,14 @@
+{
+  "name": "git-workflow",
+  "private": true,
+  "type": "module",
+  "description": "Reproducible Git transcripts and hosted exhibits for an article on javascript.io.vn",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "husky": "^9.1.7"
+  }
+}
