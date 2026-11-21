@@ -30,6 +30,7 @@ echo
 echo '# First time: the conflict, resolved by hand, and recorded'
 clock 33
 run_fails 'git rebase main'
+run 'cat config.js'
 printf '%s\n' 'export const RATE = 0.15;' '// reviewed by finance' > config.js
 run 'git add config.js && git rebase --continue'
 run 'cat config.js'

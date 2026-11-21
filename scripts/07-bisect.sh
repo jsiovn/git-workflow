@@ -3,6 +3,8 @@
 # Needs node on PATH (the test is a tiny ES module).
 source "$(dirname "$0")/lib.sh"
 
+command -v node > /dev/null || { echo "node required for this scenario" >&2; exit 1; }
+
 fresh_dir 07-bisect
 
 # Setup: a cart total with 10% VAT. Integer math gives 385 for a 350 cart;
@@ -65,7 +67,7 @@ git commit -q -am 'docs: hướng dẫn chạy test'
 
 echo '# Section 5.4: the test passed on an old commit and fails on HEAD'
 run 'git log --oneline'
-run 'node test.mjs || true'
+run_fails 'node test.mjs'
 echo
 
 echo "# Bisect between HEAD (bad) and $good (good), and let the test decide"

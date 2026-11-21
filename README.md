@@ -58,7 +58,7 @@ Watch them being produced on a clean runner:
 
 ## One story, one clock
 
-All scripts tell the same "checkout service" story: `main` gets
+The scripts on the shared story tell one "checkout service" story: `main` gets
 `chore: init checkout service`, `feat(cart): add tax constant` and later
 `feat(checkout): add shipping fee`, while `feat/discount` adds
 `feat(cart): apply 10% discount` and `test(cart): cover discount code`.
@@ -76,7 +76,8 @@ dates and the message. [`scripts/lib.sh`](scripts/lib.sh) pins all of them:
 
 So a commit that appears in two transcripts has the same hash in both: the
 rebased `feat/discount` commits (`9b05a8d`, `c4d968f`) are identical in the
-merge/rebase, force-with-lease, reflog and rebase -i transcripts. The scenarios
+merge/rebase, squash merge, force-with-lease, reflog and rebase -i
+transcripts. The scenarios
 that need a different story (`add -p`, `stash`, `bisect`, `rerere`, the
 leaked secret) build their own small repo with the same pinned identity and
 clock.
@@ -84,25 +85,38 @@ clock.
 ## Where the real output differs from the article
 
 The transcripts are what git actually prints; where the article's blocks read
-differently, the transcript wins:
+differently, the transcript wins. Commit hashes and dates differ everywhere:
+the article was written from an earlier run, so take hashes from the
+transcripts.
 
 - **5.1** `s` splits the hunk into three, so the logic needs two `y` answers
   (`s`, `y`, `y`, `n`) before the debug log is skipped.
 - **5.3** `git reset --hard` prints `HEAD is now at ...`.
 - **5.4** git 2.56 words the result `is the first 'bad' commit` and
-  `bisect found first 'bad' commit` (with quotes).
-- **5.5** confirmed: a later `git rebase main` prints
-  `warning: skipped previously applied commit`, while `git merge main` is a
-  plain merge without a conflict and leaves both copies of the commit in the
-  history.
-- **6.2** the conflict output includes git's `hint:` lines; the script sets
-  `rerere.enabled` in the throwaway repo instead of with `--global`, because
-  the scripts never write a global config.
+  `bisect found first 'bad' commit` (with quotes). The script's history is
+  shorter than the article's, so the step counts differ (`2 revisions left`,
+  then `0 revisions left`); the order of the tests is the same: `bump lodash`
+  passes, `format lại code` fails, the VAT commit fails and is named.
+- **5.6** the script adds a third commit (`test(cart): sửa typo`) so there is
+  something to fix up. git 2.56 opens the todo list with a
+  `# Rebase <base>..<tip> onto <base> (N commands)` line and lists more
+  commands than the article shows (`-c` for fixup, `break`, `label`, `reset`,
+  `merge`, `update-ref`).
+- **6.2** the conflict output includes git's `hint:` lines and a final
+  `Could not apply ...` line, and `git rebase --continue` also prints the new
+  commit and `Successfully rebased ...`. The script sets `rerere.enabled` in
+  the throwaway repo instead of with `--global`, because the scripts never
+  write a global config.
 - **7.2** `git rm --cached .env` removes the file from the index only: it is
   still in the working tree, now ignored (`!! .env` in `git status --ignored`).
   `.gitignore` must also be staged (`git add .gitignore`) to be part of the
   commit. The key in the script is deliberately fake
   (`sk_live_FAKE_DO_NOT_USE`).
+
+What the article gets right, checked here: in **5.5**, a later
+`git rebase main` drops the cherry-picked duplicate
+(`warning: skipped previously applied commit`), while `git merge main` is a
+plain merge without a conflict that keeps both copies in the history.
 
 ## What CI checks
 
