@@ -7,6 +7,19 @@
 set -euo pipefail
 
 # --- isolation: no user, system or locale settings leak in -----------------
+# Variables such as GIT_DIR (set inside hooks) would point the scenarios at the
+# caller's own repository; GIT_DEFAULT_HASH would change every hash.
+# shellcheck disable=SC2046
+unset $(git rev-parse --local-env-vars) GIT_CONFIG_PARAMETERS GIT_DEFAULT_HASH GIT_TEMPLATE_DIR
+
+# GIT_CONFIG_GLOBAL / GIT_CONFIG_SYSTEM need git 2.32; older git would read ~/.gitconfig.
+git_version="$(git --version | sed -E 's/^git version ([0-9]+)\.([0-9]+).*/\1 \2/')"
+read -r git_major git_minor <<< "$git_version"
+if [ "$git_major" -lt 2 ] || { [ "$git_major" -eq 2 ] && [ "$git_minor" -lt 32 ]; }; then
+  echo "git >= 2.32 required, found $(git --version)" >&2
+  exit 1
+fi
+
 export LC_ALL=C
 export TZ=Asia/Ho_Chi_Minh
 export TERM=dumb

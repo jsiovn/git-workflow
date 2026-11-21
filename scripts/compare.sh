@@ -36,4 +36,12 @@ for fresh in "$fresh_dir"/*.txt; do
   fi
 done
 
+for committed in "$committed_dir"/*.txt; do
+  [ -f "$committed" ] || continue
+  name="$(basename "$committed")"
+  if [ ! -f "$fresh_dir/$name" ]; then
+    echo "::warning title=$name::committed transcript has no matching script output"
+  fi
+done
+
 exit "$status"

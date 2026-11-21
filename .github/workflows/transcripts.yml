@@ -27,6 +27,7 @@ jobs:
         run: bash scripts/run-all.sh out
 
       - name: Add the transcripts to the job summary
+        if: always()
         run: |
           for f in out/*.txt; do
             {
@@ -38,6 +39,7 @@ jobs:
           done
 
       - name: Upload the transcripts
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: transcripts
