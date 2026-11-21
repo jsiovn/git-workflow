@@ -125,10 +125,11 @@ plain merge without a conflict that keeps both copies in the history.
 
 ## Commit convention
 
-Every commit in this repo follows
+Commits follow
 [conventional commits](https://www.conventionalcommits.org/) (`type(scope): subject`),
-and two tools check it, as section 3 of the article suggests for a team that
-wants enforcement:
+and two tools check them, as section 3 of the article suggests for a team that
+wants enforcement. The check starts with the commit that added it; GitHub's
+`Merge pull request` commits are ignored by commitlint by default.
 
 - **Local hook** — [`.husky/commit-msg`](.husky/commit-msg) runs
   [commitlint](https://commitlint.js.org/) with
@@ -154,7 +155,7 @@ Pull requests and branches kept on purpose, for the parts of the article that
 need a real GitHub repo. The pull requests carry the label
 [`exhibit`](https://github.com/jsiovn/git-workflow/pulls?q=label%3Aexhibit)
 and are never deleted. Their changes continue the checkout-service story under
-[`demo/`](demo/) (`node --test demo/` runs its tests).
+[`demo/`](demo/) (`node --test 'demo/*.test.js'` runs its tests).
 
 | Pull request | Merged with | What to look at |
 | --- | --- | --- |

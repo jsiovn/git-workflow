@@ -44,7 +44,7 @@ for entry in "${story[@]}"; do
 done
 
 for entry in "${story[@]}"; do
-  IFS='|' read -r branch dir rev transcript <<< "$entry"
+  IFS='|' read -r branch dir rev _ <<< "$entry"
   echo "# $branch ($(git -C "$work/$dir" rev-parse --short=7 "$rev"))"
   GIT_TERMINAL_PROMPT=0 git -C "$work/$dir" push "$remote" "$rev:refs/heads/$branch"
 done
