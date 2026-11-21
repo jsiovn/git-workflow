@@ -1,0 +1,30 @@
+# Section 1.3: feat/discount was rebased onto main (same hashes as 01)
+$ git log --oneline --graph --decorate
+* c4d968f (HEAD -> feat/discount) test(cart): cover discount code
+* 9b05a8d feat(cart): apply 10% discount
+* aaffd2d (main) feat(checkout): add shipping fee
+* 960b468 feat(cart): add tax constant
+* a325861 chore: init checkout service
+
+# Squash the whole branch into one commit on main
+$ git switch main
+Switched to branch 'main'
+$ git merge --squash feat/discount
+Updating aaffd2d..c4d968f
+Fast-forward
+Squash commit -- not updating HEAD
+ discount.js      | 1 +
+ discount.test.js | 1 +
+ 2 files changed, 2 insertions(+)
+ create mode 100644 discount.js
+ create mode 100644 discount.test.js
+$ git commit -m "feat(cart): thêm discount 10% (#42)"
+[main f01836f] feat(cart): thêm discount 10% (#42)
+ 2 files changed, 2 insertions(+)
+ create mode 100644 discount.js
+ create mode 100644 discount.test.js
+$ git log --oneline --graph -4
+* f01836f feat(cart): thêm discount 10% (#42)
+* aaffd2d feat(checkout): add shipping fee
+* 960b468 feat(cart): add tax constant
+* a325861 chore: init checkout service

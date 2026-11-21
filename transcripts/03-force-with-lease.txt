@@ -1,0 +1,25 @@
+# Section 2.1: a teammate pushes a fix to feat/discount (in their clone)
+$ git commit -am "fix(cart): làm tròn số tiền"
+[feat/discount 9c47778] fix(cart): làm tròn số tiền
+ 1 file changed, 1 insertion(+)
+$ git push origin feat/discount
+To ../remote.git
+   0454aa0..9c47778  feat/discount -> feat/discount
+
+# Meanwhile, in your clone (no fetch since): rebase onto main, then push
+$ git rebase main
+Successfully rebased and updated refs/heads/feat/discount.
+$ git push --force-with-lease origin feat/discount
+To ../remote.git
+ ! [rejected]        feat/discount -> feat/discount (stale info)
+error: failed to push some refs to '../remote.git'
+
+# Section 2.2: the same push with --force
+$ git push --force origin feat/discount
+To ../remote.git
+ + 9c47778...c4d968f feat/discount -> feat/discount (forced update)
+$ git log --oneline origin/feat/discount -4
+c4d968f test(cart): cover discount code
+9b05a8d feat(cart): apply 10% discount
+aaffd2d feat(checkout): add shipping fee
+960b468 feat(cart): add tax constant

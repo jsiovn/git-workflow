@@ -1,0 +1,34 @@
+# Section 1: feat/discount and main have diverged
+$ git log --oneline --graph --all --decorate
+* aaffd2d (main) feat(checkout): add shipping fee
+| * 0454aa0 (HEAD -> feat/discount) test(cart): cover discount code
+| * e67a1fb feat(cart): apply 10% discount
+|/  
+* 960b468 feat(cart): add tax constant
+* a325861 chore: init checkout service
+
+# Section 1.1: merge main into feat/discount
+$ git merge main
+Merge made by the 'ort' strategy.
+ shipping.js | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 shipping.js
+$ git log --oneline --graph --decorate
+*   79a870c (HEAD -> feat/discount) Merge branch 'main' into feat/discount
+|\  
+| * aaffd2d (main) feat(checkout): add shipping fee
+* | 0454aa0 test(cart): cover discount code
+* | e67a1fb feat(cart): apply 10% discount
+|/  
+* 960b468 feat(cart): add tax constant
+* a325861 chore: init checkout service
+
+# Section 1.2: from a fresh copy of the diverged state, rebase onto main
+$ git rebase main
+Successfully rebased and updated refs/heads/feat/discount.
+$ git log --oneline --graph --decorate
+* c4d968f (HEAD -> feat/discount) test(cart): cover discount code
+* 9b05a8d feat(cart): apply 10% discount
+* aaffd2d (main) feat(checkout): add shipping fee
+* 960b468 feat(cart): add tax constant
+* a325861 chore: init checkout service

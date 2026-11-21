@@ -74,7 +74,8 @@ files using [`scripts/compare.sh`](scripts/compare.sh):
   **warning** only, so a git upgrade on the runner cannot leave `main` red.
 
 The committed transcripts are the runner's output, downloaded from that
-artifact, not output from a developer machine.
+artifact, not output from a developer machine. Current files: recorded on
+2026-11-22 with git 2.56.1 on `ubuntu-latest`.
 
 ## What a hosted repo cannot show
 
