@@ -17,7 +17,8 @@ cover sections 1-2 and 5-7 of the post.
   the scripts refuse to run on older git). The committed transcripts come from
   the git of GitHub's `ubuntu-latest` runner; a different git version gives the
   same hashes but may word some messages differently.
-- **node** for `scripts/07-bisect.sh` only (its test is a small ES module).
+- **node** for `scripts/07-bisect.sh` (its test is a small ES module) and, if
+  you want the local commit hook, Node ≥ 22.12 for `npm install`.
 
 ## Quick start
 
@@ -41,6 +42,7 @@ your git config.
 | 1.3. Squash merge | [`scripts/02-squash-merge.sh`](scripts/02-squash-merge.sh) | [`transcripts/02-squash-merge.txt`](transcripts/02-squash-merge.txt) |
 | 2.1. `--force-with-lease` is rejected | [`scripts/03-force-with-lease.sh`](scripts/03-force-with-lease.sh) | [`transcripts/03-force-with-lease.txt`](transcripts/03-force-with-lease.txt) |
 | 2.2. `--force` overwrites | [`scripts/03-force-with-lease.sh`](scripts/03-force-with-lease.sh) | [`transcripts/03-force-with-lease.txt`](transcripts/03-force-with-lease.txt) |
+| 3. Conventional commits, enforced with commitlint and Husky | [`commitlint.config.js`](commitlint.config.js), [`.husky/commit-msg`](.husky/commit-msg) | [Actions › Commitlint](https://github.com/jsiovn/git-workflow/actions/workflows/commitlint.yml) |
 | 5.1. `git add -p` | [`scripts/04-add-patch.sh`](scripts/04-add-patch.sh) | [`transcripts/04-add-patch.txt`](transcripts/04-add-patch.txt) |
 | 5.2. `git stash` | [`scripts/05-stash.sh`](scripts/05-stash.sh) | [`transcripts/05-stash.txt`](transcripts/05-stash.txt) |
 | 5.3. `git reflog` | [`scripts/06-reflog-rescue.sh`](scripts/06-reflog-rescue.sh) | [`transcripts/06-reflog-rescue.txt`](transcripts/06-reflog-rescue.txt) |
@@ -50,8 +52,9 @@ your git config.
 | 6.2. `rerere` | [`scripts/10-rerere.sh`](scripts/10-rerere.sh) | [`transcripts/10-rerere.txt`](transcripts/10-rerere.txt) |
 | 7.2. A secret stays in history | [`scripts/11-secret-in-history.sh`](scripts/11-secret-in-history.sh) | [`transcripts/11-secret-in-history.txt`](transcripts/11-secret-in-history.txt) |
 
-Sections 3 (conventional commits) and 4 (choosing a workflow) print no
-command output, so they have no script.
+Section 4 (choosing a workflow) prints no command output, so it has no
+script. Section 3 has no transcript either; the convention it describes is
+enforced in this repo instead (see [Commit convention](#commit-convention)).
 
 Watch them being produced on a clean runner:
 [Actions › Transcripts](https://github.com/jsiovn/git-workflow/actions/workflows/transcripts.yml).
@@ -117,6 +120,31 @@ What the article gets right, checked here: in **5.5**, a later
 `git rebase main` drops the cherry-picked duplicate
 (`warning: skipped previously applied commit`), while `git merge main` is a
 plain merge without a conflict that keeps both copies in the history.
+
+## Commit convention
+
+Every commit in this repo follows
+[conventional commits](https://www.conventionalcommits.org/) (`type(scope): subject`),
+and two tools check it, as section 3 of the article suggests for a team that
+wants enforcement:
+
+- **Local hook** — [`.husky/commit-msg`](.husky/commit-msg) runs
+  [commitlint](https://commitlint.js.org/) with
+  [`@commitlint/config-conventional`](commitlint.config.js) on every
+  `git commit`. `npm install` turns it on (Husky's `prepare` script sets
+  `core.hooksPath`). It gives the fastest feedback, but it is optional: a clone
+  without `npm install`, or `git commit --no-verify`, skips it.
+- **CI check** — [`.github/workflows/commitlint.yml`](.github/workflows/commitlint.yml)
+  lints every commit of every pull request (job `commitlint`). Nobody can skip
+  it, so it is the one that actually holds the line. This repo has no branch
+  ruleset, so a red check does not block a merge here; on a team repo you would
+  make `commitlint` a required status check.
+
+```bash
+npm install                                   # installs commitlint and the hook
+echo "update code" | npx commitlint           # ✖ subject may not be empty, type may not be empty
+echo "feat(cart): apply a coupon code" | npx commitlint   # no output: valid
+```
 
 ## What CI checks
 
