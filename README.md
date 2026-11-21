@@ -5,14 +5,17 @@ Reproducible **Git terminal transcripts**: merge vs rebase, squash merge,
 script, byte for byte and with the same commit hashes on every run. The repo
 backs the article
 [Git rebase hay merge? Workflow và conventional commits](https://javascript.io.vn/2026/11/16/git-rebase-merge-conventional-commits-workflow/)
-on [javascript.io.vn](https://javascript.io.vn/), so you can rerun every
-command the post prints instead of taking its output on trust.
+on [javascript.io.vn](https://javascript.io.vn/), so you can rerun the
+commands the post prints instead of taking their output on trust. Today the
+scripts cover sections 1-2 of the post.
 
 ## Requirements
 
 - **bash** (Linux, macOS, or Git Bash on Windows)
-- **git** ≥ 2.28 (for `init.defaultBranch`); the committed transcripts come from
-  the git of GitHub's `ubuntu-latest` runner
+- **git** ≥ 2.32 (for `GIT_CONFIG_GLOBAL`, which keeps your `~/.gitconfig` out;
+  the scripts refuse to run on older git). The committed transcripts come from
+  the git of GitHub's `ubuntu-latest` runner; a different git version gives the
+  same hashes but may word some messages differently.
 
 ## Quick start
 
@@ -72,6 +75,10 @@ files using [`scripts/compare.sh`](scripts/compare.sh):
 - the ordered list of commit hashes differs → **the job fails**;
 - anything else differs (for example the wording of a newer git) → a
   **warning** only, so a git upgrade on the runner cannot leave `main` red.
+
+GitHub disables scheduled workflows in a public repo after 60 days without
+repository activity, so the monthly run stops on its own once the repo is
+quiet; run it by hand from the Actions tab (`workflow_dispatch`).
 
 The committed transcripts are the runner's output, downloaded from that
 artifact, not output from a developer machine. Current files: recorded on
