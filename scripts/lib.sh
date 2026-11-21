@@ -68,6 +68,9 @@ SLOT_MERGE=5
 SLOT_TEAMMATE_FIX=6
 SLOT_REBASE=8
 SLOT_SQUASH=9
+SLOT_CHERRY_PICK=10
+SLOT_TYPO=11
+SLOT_FIXUP=12
 
 # --- scenario directory -----------------------------------------------------
 # fresh_dir <name>: wipe and recreate $WORK_ROOT/<name>, cd into it.
