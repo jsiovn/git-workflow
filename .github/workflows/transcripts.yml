@@ -1,0 +1,48 @@
+name: Transcripts
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 1 * *' # monthly: catch a git upgrade on the runner image
+
+permissions:
+  contents: read
+
+jobs:
+  transcripts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Git version
+        run: |
+          git --version
+          echo "**$(git --version)** on \`$(lsb_release -ds)\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Run every scenario
+        run: bash scripts/run-all.sh out
+
+      - name: Add the transcripts to the job summary
+        run: |
+          for f in out/*.txt; do
+            {
+              echo "### $(basename "$f")"
+              echo '```text'
+              cat "$f"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          done
+
+      - name: Upload the transcripts
+        uses: actions/upload-artifact@v7
+        with:
+          name: transcripts
+          path: out/*.txt
+          if-no-files-found: error
+
+      - name: Compare with the committed transcripts
+        run: bash scripts/compare.sh transcripts out
