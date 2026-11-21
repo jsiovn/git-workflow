@@ -1,0 +1,48 @@
+# Section 5.5: take only the discount commit onto main
+$ git switch main
+Switched to branch 'main'
+$ git cherry-pick e67a1fb
+[main 597ff5d] feat(cart): apply 10% discount
+ Date: Mon Nov 16 09:02:00 2026 +0700
+ 1 file changed, 1 insertion(+)
+ create mode 100644 discount.js
+$ git log --oneline --graph --all --decorate
+* 597ff5d (HEAD -> main) feat(cart): apply 10% discount
+* aaffd2d feat(checkout): add shipping fee
+| * 0454aa0 (feat/discount) test(cart): cover discount code
+| * e67a1fb feat(cart): apply 10% discount
+|/  
+* 960b468 feat(cart): add tax constant
+* a325861 chore: init checkout service
+
+# Later, feat/discount is rebased onto main: the duplicate patch is dropped
+$ git switch feat/discount
+Switched to branch 'feat/discount'
+$ git rebase main
+warning: skipped previously applied commit e67a1fb
+hint: use --reapply-cherry-picks to include skipped commits
+hint: Disable this message with "git config set advice.skippedCherryPicks false"
+Successfully rebased and updated refs/heads/feat/discount.
+$ git log --oneline --graph --decorate
+* c2d12af (HEAD -> feat/discount) test(cart): cover discount code
+* 597ff5d (main) feat(cart): apply 10% discount
+* aaffd2d feat(checkout): add shipping fee
+* 960b468 feat(cart): add tax constant
+* a325861 chore: init checkout service
+
+# From a fresh copy: the same cherry-pick, then main is merged instead
+$ git merge main
+Merge made by the 'ort' strategy.
+ shipping.js | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 shipping.js
+$ git log --oneline --graph --decorate
+*   26ec2f1 (HEAD -> feat/discount) Merge branch 'main' into feat/discount
+|\  
+| * 597ff5d (main) feat(cart): apply 10% discount
+| * aaffd2d feat(checkout): add shipping fee
+* | 0454aa0 test(cart): cover discount code
+* | e67a1fb feat(cart): apply 10% discount
+|/  
+* 960b468 feat(cart): add tax constant
+* a325861 chore: init checkout service

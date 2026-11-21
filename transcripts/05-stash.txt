@@ -1,0 +1,20 @@
+# Section 5.2: a production bug comes in while the coupon work is half done
+$ git status --short
+ M checkout.js
+$ git stash push -m "wip: coupon"
+Saved working directory and index state On main: wip: coupon
+$ git stash list
+stash@{0}: On main: wip: coupon
+$ git status --short
+
+# The bug is fixed elsewhere; back to the coupon
+$ git stash pop
+On branch main
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   checkout.js
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (dcab4745ba771e86dbc75ca7cb9da7a12cfe1080)
+$ git stash list

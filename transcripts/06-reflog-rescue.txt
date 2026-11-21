@@ -1,0 +1,30 @@
+# Section 5.3: on the rebased feat/discount, reset to main by mistake
+$ git log --oneline -3
+c4d968f test(cart): cover discount code
+9b05a8d feat(cart): apply 10% discount
+aaffd2d feat(checkout): add shipping fee
+$ git reset --hard main
+HEAD is now at aaffd2d feat(checkout): add shipping fee
+$ git log --oneline -3
+aaffd2d feat(checkout): add shipping fee
+960b468 feat(cart): add tax constant
+a325861 chore: init checkout service
+
+# The two commits are gone from the branch, not from the reflog
+$ git reflog -8
+aaffd2d HEAD@{0}: reset: moving to main
+c4d968f HEAD@{1}: rebase (finish): returning to refs/heads/feat/discount
+c4d968f HEAD@{2}: rebase (pick): test(cart): cover discount code
+9b05a8d HEAD@{3}: rebase (pick): feat(cart): apply 10% discount
+aaffd2d HEAD@{4}: rebase (start): checkout main
+0454aa0 HEAD@{5}: checkout: moving from main to feat/discount
+aaffd2d HEAD@{6}: commit: feat(checkout): add shipping fee
+960b468 HEAD@{7}: checkout: moving from feat/discount to main
+
+# HEAD@{1} is where HEAD was just before the reset
+$ git reset --hard 'HEAD@{1}'
+HEAD is now at c4d968f test(cart): cover discount code
+$ git log --oneline -3
+c4d968f test(cart): cover discount code
+9b05a8d feat(cart): apply 10% discount
+aaffd2d feat(checkout): add shipping fee

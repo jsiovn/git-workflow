@@ -1,0 +1,39 @@
+# Section 5.4: the test passed on an old commit and fails on HEAD
+$ git log --oneline
+aa826cf docs: hướng dẫn chạy test
+3c697c7 style(cart): format lại code
+2d4e0e0 feat(cart): cộng VAT vào tổng
+fcf6b9c chore(deps): bump lodash
+859ffc2 docs: thêm README
+4e6baca feat(cart): tính tổng tiền có VAT
+$ node test.mjs || true
+FAIL: got 385.00000000000006
+
+# Bisect between HEAD (bad) and 4e6baca (good), and let the test decide
+$ git bisect start HEAD 4e6baca --
+Bisecting: 2 revisions left to test after this (roughly 1 step)
+[fcf6b9cd6a65f6eecf772bc5ba8b886b62dae751] chore(deps): bump lodash
+$ git bisect run node test.mjs
+running 'node' 'test.mjs'
+PASS
+Bisecting: 0 revisions left to test after this (roughly 1 step)
+[3c697c7f9af96301fa888d814504e34f7306b99a] style(cart): format lại code
+running 'node' 'test.mjs'
+FAIL: got 385.00000000000006
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[2d4e0e0cd38786c75f5f88c070ff7ed12783d4ef] feat(cart): cộng VAT vào tổng
+running 'node' 'test.mjs'
+FAIL: got 385.00000000000006
+2d4e0e0cd38786c75f5f88c070ff7ed12783d4ef is the first 'bad' commit
+commit 2d4e0e0cd38786c75f5f88c070ff7ed12783d4ef
+Author: Dev <dev@example.com>
+Date:   Mon Nov 16 09:23:00 2026 +0700
+
+    feat(cart): cộng VAT vào tổng
+
+ total.js | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+bisect found first 'bad' commit
+$ git bisect reset
+Previous HEAD position was 2d4e0e0 feat(cart): cộng VAT vào tổng
+Switched to branch 'main'

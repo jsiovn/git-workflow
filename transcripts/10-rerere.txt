@@ -1,0 +1,49 @@
+# Section 6.2: turn rerere on
+$ git config rerere.enabled true
+
+# First time: the conflict, resolved by hand, and recorded
+$ git rebase main
+Auto-merging config.js
+CONFLICT (content): Merge conflict in config.js
+error: could not apply 00962d9... feat: bump rate to 15%
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Recorded preimage for 'config.js'
+Could not apply 00962d9... # feat: bump rate to 15%
+$ git add config.js && git rebase --continue
+Recorded resolution for 'config.js'.
+[detached HEAD deaa5a6] feat: bump rate to 15%
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Successfully rebased and updated refs/heads/feat/rate.
+$ cat config.js
+export const RATE = 0.15;
+// reviewed by finance
+
+# Go back to the branch as it was before the rebase, and rebase again
+$ git reset --hard ORIG_HEAD
+HEAD is now at 00962d9 feat: bump rate to 15%
+$ git rebase main
+Auto-merging config.js
+CONFLICT (content): Merge conflict in config.js
+error: could not apply 00962d9... feat: bump rate to 15%
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Resolved 'config.js' using previous resolution.
+Could not apply 00962d9... # feat: bump rate to 15%
+$ cat config.js
+export const RATE = 0.15;
+// reviewed by finance
+$ git add config.js && git rebase --continue
+[detached HEAD deaa5a6] feat: bump rate to 15%
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Successfully rebased and updated refs/heads/feat/rate.
+$ git log --oneline
+deaa5a6 feat: bump rate to 15%
+cd125bf fix: rate 12% theo finance
+c7f095b chore: init config

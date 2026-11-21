@@ -1,0 +1,57 @@
+# Section 5.6: three commits on top of main, the last one is noise
+$ git log --oneline -4
+3ea01a4 test(cart): sửa typo
+c4d968f test(cart): cover discount code
+9b05a8d feat(cart): apply 10% discount
+aaffd2d feat(checkout): add shipping fee
+
+# The todo list git rebase -i opens in your editor
+$ GIT_SEQUENCE_EDITOR=cat git rebase -i main
+pick 9b05a8d # feat(cart): apply 10% discount
+pick c4d968f # test(cart): cover discount code
+pick 3ea01a4 # test(cart): sửa typo
+
+# Rebase aaffd2d..3ea01a4 onto aaffd2d (3 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup [-C | -c] <commit> = like "squash" but keep only the previous
+#                    commit's log message, unless -C is used, in which case
+#                    keep only this commit's message; -c is same as -C but
+#                    opens the editor
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+#         create a merge commit using the original merge commit's
+#         message (or the oneline, if no original merge commit was
+#         specified); use -c <commit> to reword the commit message
+# u, update-ref <ref> = track a placeholder for the <ref> to be updated
+#                       to this position in the new commits. The <ref> is
+#                       updated at the end of the rebase
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+Successfully rebased and updated refs/heads/feat/discount.
+
+# Change the third line from pick to fixup: the typo fix melts into the test commit
+$ GIT_SEQUENCE_EDITOR="sed -i.bak '3s/^pick/fixup/'" git rebase -i main
+Successfully rebased and updated refs/heads/feat/discount.
+$ git log --oneline -3
+736a2e9 test(cart): cover discount code
+9b05a8d feat(cart): apply 10% discount
+aaffd2d feat(checkout): add shipping fee
+$ git show --stat --format=%s HEAD
+test(cart): cover discount code
+
+ discount.test.js | 2 ++
+ 1 file changed, 2 insertions(+)

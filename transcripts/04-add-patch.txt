@@ -1,0 +1,83 @@
+# Section 5.1: one hunk mixes the coupon logic and a debug log
+$ git diff
+diff --git a/checkout.js b/checkout.js
+index c17bd17..89dd5ae 100644
+--- a/checkout.js
++++ b/checkout.js
+@@ -1,4 +1,8 @@
+-export function checkout(cart) {
++export function checkout(cart, coupon) {
+   const total = cart.reduce((s, i) => s + i.price, 0);
+-  return { total };
++  const discounted = coupon ? total * 0.9 : total;
++  return { total: discounted };
+ }
++
++// TODO: xóa log này trước khi push
++console.log('debugging');
+
+# git add -p: split the hunk, stage the two logic hunks, skip the log
+# (prompts end without a newline, so each answer runs into the next line)
+$ printf 's\ny\ny\nn\n' | git add -p
+diff --git a/checkout.js b/checkout.js
+index c17bd17..89dd5ae 100644
+--- a/checkout.js
++++ b/checkout.js
+@@ -1,4 +1,8 @@
+-export function checkout(cart) {
++export function checkout(cart, coupon) {
+   const total = cart.reduce((s, i) => s + i.price, 0);
+-  return { total };
++  const discounted = coupon ? total * 0.9 : total;
++  return { total: discounted };
+ }
++
++// TODO: xóa log này trước khi push
++console.log('debugging');
+(1/1) Stage this hunk [y,n,q,a,d,s,e,p,P,?]? Split into 3 hunks.
+@@ -1,2 +1,2 @@
+-export function checkout(cart) {
++export function checkout(cart, coupon) {
+   const total = cart.reduce((s, i) => s + i.price, 0);
+(1/3) Stage this hunk [y,n,q,a,d,k,K,j,J,g,/,e,p,P,?]? @@ -2,3 +2,4 @@
+   const total = cart.reduce((s, i) => s + i.price, 0);
+-  return { total };
++  const discounted = coupon ? total * 0.9 : total;
++  return { total: discounted };
+ }
+(2/3) Stage this hunk [y,n,q,a,d,k,K,j,J,g,/,e,p,P,?]? @@ -4 +5,4 @@
+ }
++
++// TODO: xóa log này trước khi push
++console.log('debugging');
+(3/3) Stage this hunk [y,n,q,a,d,K,J,g,/,e,p,P,?]? 
+
+
+# Staged: the logic only
+$ git diff --cached
+diff --git a/checkout.js b/checkout.js
+index c17bd17..7c4e7bf 100644
+--- a/checkout.js
++++ b/checkout.js
+@@ -1,4 +1,5 @@
+-export function checkout(cart) {
++export function checkout(cart, coupon) {
+   const total = cart.reduce((s, i) => s + i.price, 0);
+-  return { total };
++  const discounted = coupon ? total * 0.9 : total;
++  return { total: discounted };
+ }
+
+# Not staged: the debug log
+$ git diff
+diff --git a/checkout.js b/checkout.js
+index 7c4e7bf..89dd5ae 100644
+--- a/checkout.js
++++ b/checkout.js
+@@ -3,3 +3,6 @@ export function checkout(cart, coupon) {
+   const discounted = coupon ? total * 0.9 : total;
+   return { total: discounted };
+ }
++
++// TODO: xóa log này trước khi push
++console.log('debugging');
